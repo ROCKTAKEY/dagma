@@ -1,0 +1,9 @@
+[[https://github.com/ROCKTAKEY/dagma][https://img.shields.io/github/tag/ROCKTAKEY/dagma.svg?style=flat-square]]
+[[file:LICENSE][https://img.shields.io/github/license/ROCKTAKEY/dagma.svg?style=flat-square]]
+[[https://codecov.io/gh/ROCKTAKEY/dagma?branch=master][https://img.shields.io/codecov/c/github/ROCKTAKEY/dagma.svg?style=flat-square]]
+[[https://github.com/ROCKTAKEY/dagma/actions][https://img.shields.io/github/workflow/status/ROCKTAKEY/dagma/test/master.svg?style=flat-square]]
+* dagma: Emacs configure managed as directed acyclic graph
+
+* How to Use?
+* License
+  This package is licensed by GPLv3. See [[file:LICENSE][LICENSE]].
