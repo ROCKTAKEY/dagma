@@ -33,7 +33,16 @@
 
 (require 'dagma)
 
+(ert-deftest dagma--plist-put-empty ()
+  (let ((plist nil))
+    (dagma--plist-put plist :key 'val)
+    (should (eq (plist-get plist :key) 'val))))
 
+(ert-deftest dagma--plist-put-not-empty ()
+  (let ((plist '(:key1 val1)))
+    (dagma--plist-put plist :key2 'val2)
+    (should (eq (plist-get plist :key1) 'val1))
+    (should (eq (plist-get plist :key2) 'val2))))
 
 
 (provide 'dagma-test)
