@@ -34,5 +34,14 @@
   :prefix "dagma-"
   :link '(url-link "https://github.com/ROCKTAKEY/dagma"))
 
+
+
+(defmacro dagma--plist-put (plist prop val)
+  "Change value in PLIST of PROP to VAL.
+It is same as `plist-put' except it is valid even when PLIST is empty."
+  `(if ,plist
+       (plist-put ,plist ,prop ,val)
+     (setq ,plist (list ,prop ,val))))
+
 (provide 'dagma)
 ;;; dagma.el ends here
