@@ -44,6 +44,55 @@
     (should (eq (plist-get plist :key1) 'val1))
     (should (eq (plist-get plist :key2) 'val2))))
 
+
+
+(ert-deftest dagma--node-plist-get/put ()
+  (let ((node (dagma--node-create)))
+    (should (eq (dagma--node-plist-get node :prop1) nil))
+    (dagma--node-plist-put node :prop1 'val1)
+    (should (eq (dagma--node-plist-get node :prop1) 'val1))))
+
+(ert-deftest dagma--node-parents-add-1 ()
+  (let ((node (dagma--node-create :parents '(key1 key2))))
+    (should (memq 'key1 (dagma-node-parents node)))
+    (should (memq 'key2 (dagma-node-parents node)))
+    (dagma--node-parents-add-1 node 'key3)
+    (should (memq 'key1 (dagma-node-parents node)))
+    (should (memq 'key2 (dagma-node-parents node)))
+    (should (memq 'key3 (dagma-node-parents node)))))
+
+(ert-deftest dagma--node-parents-remove-1 ()
+  (let ((node (dagma--node-create :parents '(key1 key2))))
+    (should (memq 'key1 (dagma-node-parents node)))
+    (should (memq 'key2 (dagma-node-parents node)))
+    (dagma--node-parents-remove-1 node 'key3)
+    (should (memq 'key1 (dagma-node-parents node)))
+    (should (memq 'key2 (dagma-node-parents node)))
+    (should-not (memq 'key3 (dagma-node-parents node)))
+    (dagma--node-parents-remove-1 node 'key2)
+    (should (memq 'key1 (dagma-node-parents node)))
+    (should-not (memq 'key2 (dagma-node-parents node)))))
+
+(ert-deftest dagma--node-children-add-1 ()
+  (let ((node (dagma--node-create :children '(key1 key2))))
+    (should (memq 'key1 (dagma-node-children node)))
+    (should (memq 'key2 (dagma-node-children node)))
+    (dagma--node-children-add-1 node 'key3)
+    (should (memq 'key1 (dagma-node-children node)))
+    (should (memq 'key2 (dagma-node-children node)))
+    (should (memq 'key3 (dagma-node-children node)))))
+
+(ert-deftest dagma--node-children-remove-1 ()
+  (let ((node (dagma--node-create :children '(key1 key2))))
+    (should (memq 'key1 (dagma-node-children node)))
+    (should (memq 'key2 (dagma-node-children node)))
+    (dagma--node-children-remove-1 node 'key3)
+    (should (memq 'key1 (dagma-node-children node)))
+    (should (memq 'key2 (dagma-node-children node)))
+    (should-not (memq 'key3 (dagma-node-children node)))
+    (dagma--node-children-remove-1 node 'key2)
+    (should (memq 'key1 (dagma-node-children node)))
+    (should-not (memq 'key2 (dagma-node-children node)))))
 
 (provide 'dagma-test)
 ;;; dagma-test.el ends here
