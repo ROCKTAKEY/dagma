@@ -80,8 +80,6 @@ It is used when you make instance of `dagma-node' through `dagma--node-create'."
     (dagma--plist-put plist prop val)
     (setf (dagma-node-plist node) plist)))
 
-
-
 (defun dagma--node-parents-add-1 (node key)
   "Add KEY to list as `parents' in `dagma-node' NODE."
   (cl-check-type node dagma-node)
