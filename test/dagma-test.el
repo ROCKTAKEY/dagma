@@ -94,5 +94,127 @@
     (should (memq 'key1 (dagma-node-children node)))
     (should-not (memq 'key2 (dagma-node-children node)))))
 
+
+
+(ert-deftest dagma--graph-children-get/put ()
+  (let ((graph (dagma--graph-create))
+        (node (dagma--node-create :children '(child1 child2)
+                                  :parents '(parent1 parent2)
+                                  :plist '(:prop1 val1 :prop2 val2))))
+    (should-not (dagma--graph-children-get graph 'key1))
+    (dagma--graph-node-put graph 'key1 node)
+    (should (equal (dagma--graph-children-get graph 'key1) '(child1 child2)))))
+
+(ert-deftest dagma--graph-parents-get/put ()
+  (let ((graph (dagma--graph-create))
+        (node (dagma--node-create :children '(parent1 parent2)
+                                  :parents '(parent1 parent2)
+                                  :plist '(:prop1 val1 :prop2 val2))))
+    (should-not (dagma--graph-parents-get graph 'key1))
+    (dagma--graph-node-put graph 'key1 node)
+    (should (equal (dagma--graph-parents-get graph 'key1) '(parent1 parent2)))))
+
+
+
+(ert-deftest dagma--graph-children-add/remove ()
+  (let ((graph (dagma--graph-create))
+        (node (dagma--node-create :children '(child1 child2)
+                                  :parents '(parent1 parent2)
+                                  :plist '(:prop1 val1 :prop2 val2))))
+    (dagma--graph-node-put graph 'key1 node)
+    (should-not (memq 'child3 (dagma--graph-children-get graph 'key1)))
+    (dagma--graph-children-add-1 graph 'key1 'child3)
+    (should (memq 'child3 (dagma--graph-children-get graph 'key1)))
+
+    (should-not (memq 'child3 (dagma--graph-children-get graph 'key2)))
+    (dagma--graph-children-add-1 graph 'key2 'child3)
+    (should (memq 'child3 (dagma--graph-children-get graph 'key2)))
+
+    (dagma--graph-children-remove-1 graph 'key1 'child3)
+    (should-not (memq 'child3 (dagma--graph-children-get graph 'key1)))
+    (should (memq 'child1 (dagma--graph-children-get graph 'key1)))
+    (should (memq 'child2 (dagma--graph-children-get graph 'key1)))
+
+    (dagma--graph-children-remove-1 graph 'key1 'child4)
+    (should (memq 'child1 (dagma--graph-children-get graph 'key1)))
+    (should (memq 'child2 (dagma--graph-children-get graph 'key1)))))
+
+(ert-deftest dagma--graph-parents-add/remove ()
+  (let ((graph (dagma--graph-create))
+        (node (dagma--node-create :children '(child1 child2)
+                                  :parents '(parent1 parent2)
+                                  :plist '(:prop1 val1 :prop2 val2))))
+    (dagma--graph-node-put graph 'key1 node)
+    (should-not (memq 'parent3 (dagma--graph-parents-get graph 'key1)))
+    (dagma--graph-parents-add-1 graph 'key1 'parent3)
+    (should (memq 'parent3 (dagma--graph-parents-get graph 'key1)))
+
+    (should-not (memq 'parent3 (dagma--graph-parents-get graph 'key2)))
+    (dagma--graph-parents-add-1 graph 'key2 'parent3)
+    (should (memq 'parent3 (dagma--graph-parents-get graph 'key2)))
+
+    (dagma--graph-parents-remove-1 graph 'key1 'parent3)
+    (should-not (memq 'parent3 (dagma--graph-parents-get graph 'key1)))
+    (should (memq 'parent1 (dagma--graph-parents-get graph 'key1)))
+    (should (memq 'parent2 (dagma--graph-parents-get graph 'key1)))
+
+    (dagma--graph-parents-remove-1 graph 'key1 'parent4)
+    (should (memq 'parent1 (dagma--graph-parents-get graph 'key1)))
+    (should (memq 'parent2 (dagma--graph-parents-get graph 'key1)))))
+
+(ert-deftest dagma--graph-children-put ()
+  (let ((graph (dagma--graph-create))
+        (node (dagma--node-create :children '(child1 child2)
+                                  :parents '(parent1 parent2)
+                                  :plist '(:prop1 val1 :prop2 val2))))
+    (dagma--graph-node-put graph 'key1 node)
+    (should-not (memq 'child3 (dagma--graph-children-get graph 'key1)))
+    (dagma--graph-children-put graph 'key1 '(child3))
+    (should (memq 'child3 (dagma--graph-children-get graph 'key1)))
+    (should-not (memq 'child1 (dagma--graph-children-get graph 'key1)))
+    (should-not (memq 'child2 (dagma--graph-children-get graph 'key1)))
+
+    (should-not (memq 'child3 (dagma--graph-children-get graph 'key2)))
+    (dagma--graph-children-put graph 'key2 '(child3))
+    (should (memq 'child3 (dagma--graph-children-get graph 'key2)))
+    (should-not (memq 'child1 (dagma--graph-children-get graph 'key2)))
+    (should-not (memq 'child2 (dagma--graph-children-get graph 'key2)))))
+
+(ert-deftest dagma--graph-parents-put ()
+  (let ((graph (dagma--graph-create))
+        (node (dagma--node-create :children '(child1 child2)
+                                  :parents '(parent1 parent2)
+                                  :plist '(:prop1 val1 :prop2 val2))))
+    (dagma--graph-node-put graph 'key1 node)
+    (should-not (memq 'parent3 (dagma--graph-parents-get graph 'key1)))
+    (dagma--graph-parents-put graph 'key1 '(parent3))
+    (should (memq 'parent3 (dagma--graph-parents-get graph 'key1)))
+    (should-not (memq 'parent1 (dagma--graph-parents-get graph 'key1)))
+    (should-not (memq 'parent2 (dagma--graph-parents-get graph 'key1)))
+
+    (should-not (memq 'parent3 (dagma--graph-parents-get graph 'key2)))
+    (dagma--graph-parents-put graph 'key2 '(parent3))
+    (should (memq 'parent3 (dagma--graph-parents-get graph 'key2)))
+    (should-not (memq 'parent1 (dagma--graph-parents-get graph 'key2)))
+    (should-not (memq 'parent2 (dagma--graph-parents-get graph 'key2)))
+))
+
+
+
+(ert-deftest dagma--graph-plist-get/put ()
+  (let ((graph (dagma--graph-create))
+        (node (dagma--node-create :children '(child1 child2)
+                                  :parents '(parent1 parent2)
+                                  :plist '(:prop1 val1 :prop2 val2))))
+    (dagma--graph-node-put graph 'key1 node)
+    (should (eq (dagma--graph-plist-get graph 'key1 :prop1) 'val1))
+    (should (eq (dagma--graph-plist-get graph 'key1 :prop2) 'val2))
+    (should-not (eq (dagma--graph-plist-get graph 'key1 :prop3) 'val3))
+
+    (dagma--graph-plist-put graph 'key1 :prop3 'val3)
+    (should (eq (dagma--graph-plist-get graph 'key1 :prop1) 'val1))
+    (should (eq (dagma--graph-plist-get graph 'key1 :prop2) 'val2))
+    (should (eq (dagma--graph-plist-get graph 'key1 :prop3) 'val3))))
+
 (provide 'dagma-test)
 ;;; dagma-test.el ends here
